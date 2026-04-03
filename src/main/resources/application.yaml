@@ -1,0 +1,11 @@
+#file: noinspection SpellCheckingInspection
+
+spring:
+  main:
+    banner-mode: off
+
+springdoc:
+  api-docs:
+    enabled: ${SPRING_SWAGGER:true}
+  swagger-ui:
+    enabled: ${SPRING_SWAGGER:true}
