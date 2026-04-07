@@ -2,6 +2,7 @@ package ru.ibs.transform.xml.controllers
 
 import lombok.RequiredArgsConstructor
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
@@ -29,6 +30,15 @@ class ResultController {
 
     @GetMapping("all")
     fun results(): BatchResults {
+        return BatchResults(
+            listOf(
+                SingleResult(1, LocalDateTime.now(), LocalDateTime.now()),
+                SingleResult(2, LocalDateTime.now(), LocalDateTime.now()),
+            ), 0, 1, 10)
+    }
+
+    @PostMapping("all2")
+    fun results2(): BatchResults {
         return BatchResults(
             listOf(
                 SingleResult(1, LocalDateTime.now(), LocalDateTime.now()),

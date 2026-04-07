@@ -24,9 +24,9 @@ class SecurityConfig {
             c.configurationSource(source)
         })
 
-        http.csrf(
-            { c -> c.disable() }
-        )
+//        http.csrf(
+//            { c -> c.disable() }
+//        )
 
         http.authorizeHttpRequests(
             { c -> c.anyRequest().permitAll() }
