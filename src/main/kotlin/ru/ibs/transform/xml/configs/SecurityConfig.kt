@@ -10,6 +10,7 @@ import org.springframework.web.cors.CorsConfigurationSource
 
 @Configuration
 class SecurityConfig {
+
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -17,16 +18,16 @@ class SecurityConfig {
             val source = CorsConfigurationSource { _: HttpServletRequest? ->
                 val config = CorsConfiguration()
                 config.allowedOriginPatterns = mutableListOf("http://localhost:*")
-                config.allowedMethods = mutableListOf("POST", "GET")
+                config.allowedMethods = mutableListOf("POST", "GET", "OPTIONS")
                 config.allowedHeaders = mutableListOf("*")
                 config
             }
             c.configurationSource(source)
         })
 
-//        http.csrf(
-//            { c -> c.disable() }
-//        )
+        http.csrf(
+            { c -> c.disable() }
+        )
 
         http.authorizeHttpRequests(
             { c -> c.anyRequest().permitAll() }
