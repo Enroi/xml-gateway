@@ -8,8 +8,9 @@ val konsist = "0.17.3"
 plugins {
 	kotlin("jvm") version "2.3.20"
 	kotlin("plugin.spring") version "2.3.20"
-	id("org.springframework.boot") version "4.0.5"
+	id("org.springframework.boot") version "4.1.0-M4"
 	id("io.spring.dependency-management") version "1.1.7"
+    kotlin("plugin.jpa") version "2.3.20"
 }
 
 group = "ru.ibs.transform"
@@ -44,10 +45,15 @@ dependencies {
         exclude(group = "org.slf4j")
     }
 
+    implementation("org.springframework.boot:spring-boot-h2console")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+
+    runtimeOnly("com.h2database:h2")
 
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
@@ -56,6 +62,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("com.lemonappdev:konsist:$konsist")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }
 
 configurations {
@@ -72,4 +79,10 @@ tasks.test {
     )
 
 	useJUnitPlatform()
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
 }
