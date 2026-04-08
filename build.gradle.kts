@@ -3,6 +3,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val swagger = "3.0.1"
+val konsist = "0.17.3"
 
 plugins {
 	kotlin("jvm") version "2.3.20"
@@ -54,6 +55,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("com.lemonappdev:konsist:$konsist")
 }
 
 configurations {
