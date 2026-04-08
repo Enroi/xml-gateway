@@ -26,5 +26,6 @@ class SecurityConfig {
         })
             .csrf({ c -> c.disable() })
             .authorizeHttpRequests({ c -> c.anyRequest().permitAll() })
+            .headers({ headers -> headers.frameOptions({ frameOptions -> frameOptions.sameOrigin() }) })
             .build()
 }
