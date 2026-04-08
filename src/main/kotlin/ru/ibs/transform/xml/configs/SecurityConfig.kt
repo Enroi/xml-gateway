@@ -15,14 +15,13 @@ class SecurityConfig {
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
         http.cors({ c ->
-            val source = CorsConfigurationSource { _: HttpServletRequest? ->
-                val config = CorsConfiguration()
-                config.allowedOriginPatterns = listOf("http://localhost:*")
-                config.allowedMethods = listOf("POST", "GET", "OPTIONS")
-                config.allowedHeaders = listOf("*")
-                config
+            c.configurationSource { _: HttpServletRequest? ->
+                CorsConfiguration().apply {
+                    this.allowedOriginPatterns = listOf("http://localhost:*")
+                    this.allowedMethods = listOf("POST", "GET", "OPTIONS")
+                    this.allowedHeaders = listOf("*")
+                }
             }
-            c.configurationSource(source)
         })
             .csrf({ c -> c.disable() })
             .authorizeHttpRequests({ c -> c.anyRequest().permitAll() })
