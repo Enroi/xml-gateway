@@ -13,6 +13,9 @@ spring:
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update  # Автоматическое создание/обновление таблиц
+    show-sql: true      # Показывать SQL запросы
 
 springdoc:
   api-docs:
