@@ -17,9 +17,9 @@ class SecurityConfig {
         http.cors({ c ->
             val source = CorsConfigurationSource { _: HttpServletRequest? ->
                 val config = CorsConfiguration()
-                config.allowedOriginPatterns = mutableListOf("http://localhost:*")
-                config.allowedMethods = mutableListOf("POST", "GET", "OPTIONS")
-                config.allowedHeaders = mutableListOf("*")
+                config.allowedOriginPatterns = listOf("http://localhost:*")
+                config.allowedMethods = listOf("POST", "GET", "OPTIONS")
+                config.allowedHeaders = listOf("*")
                 config
             }
             c.configurationSource(source)
