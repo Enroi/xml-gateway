@@ -14,7 +14,7 @@ class SecurityConfig {
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
-        http.cors({ c ->
+        http.cors { c ->
             c.configurationSource { _: HttpServletRequest? ->
                 CorsConfiguration().apply {
                     this.allowedOriginPatterns = listOf("http://localhost:*")
@@ -22,9 +22,9 @@ class SecurityConfig {
                     this.allowedHeaders = listOf("*")
                 }
             }
-        })
-            .csrf({ c -> c.disable() })
-            .authorizeHttpRequests({ c -> c.anyRequest().permitAll() })
-            .headers({ headers -> headers.frameOptions({ frameOptions -> frameOptions.sameOrigin() }) })
+        }
+            .csrf { c -> c.disable() }
+            .authorizeHttpRequests { c -> c.anyRequest().permitAll() }
+            .headers { headers -> headers.frameOptions { frameOptions -> frameOptions.sameOrigin() } }
             .build()
 }
