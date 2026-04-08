@@ -13,7 +13,7 @@ class SecurityConfig {
 
     @Bean
     @Throws(Exception::class)
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
         http.cors({ c ->
             val source = CorsConfigurationSource { _: HttpServletRequest? ->
                 val config = CorsConfiguration()
@@ -24,15 +24,7 @@ class SecurityConfig {
             }
             c.configurationSource(source)
         })
-
-        http.csrf(
-            { c -> c.disable() }
-        )
-
-        http.authorizeHttpRequests(
-            { c -> c.anyRequest().permitAll() }
-        )
-
-        return http.build()
-    }
+            .csrf({ c -> c.disable() })
+            .authorizeHttpRequests({ c -> c.anyRequest().permitAll() })
+            .build()
 }
