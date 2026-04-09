@@ -11,6 +11,7 @@ plugins {
 	id("org.springframework.boot") version "4.1.0-M4"
 	id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.3.20"
+    kotlin("plugin.serialization") version "2.2.0"
 }
 
 group = "ru.ibs.transform"
@@ -52,6 +53,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.apache.santuario:xmlsec:4.0.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 
     runtimeOnly("com.h2database:h2")
 

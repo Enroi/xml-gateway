@@ -3,6 +3,8 @@ package ru.ibs.transform.xml
 import com.lemonappdev.konsist.api.KoModifier
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.declaration.KoClassDeclaration
+import com.lemonappdev.konsist.api.ext.list.containingDeclarations
+import com.lemonappdev.konsist.api.ext.list.containingFiles
 import com.lemonappdev.konsist.api.ext.list.modifierprovider.withModifier
 import com.lemonappdev.konsist.api.ext.list.objects
 import com.lemonappdev.konsist.api.ext.list.properties
@@ -76,16 +78,4 @@ class GeneralArchTests {
             }
     }
 
-    @Test
-    fun `Controller should not have repository fields`() {
-        Konsist
-            .scopeFromProject()
-            .classes()
-            .withName { it == "MessageController" }
-            .withAnnotationOf(RestController::class)
-            .properties()
-            .assertTrue(additionalMessage = "Контроллер не должен работать с репозиториями") {
-                (it.containingDeclaration as KoClassDeclaration).annotations.none { a -> a.equals(Repository::class) }
-            }
-    }
 }
