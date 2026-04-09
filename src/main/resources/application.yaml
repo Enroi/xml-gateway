@@ -22,3 +22,12 @@ springdoc:
     enabled: ${SPRING_SWAGGER:true}
   swagger-ui:
     enabled: ${SPRING_SWAGGER:true}
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: TRACE
+        SQL: DEBUG

@@ -6,13 +6,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.ibs.transform.xml.entities.immutables.XmlInputDocument
 import ru.ibs.transform.xml.repositories.XmlInputDocumentRepository
-import java.security.MessageDigest
 
 @Service
 class XmlInputSaverService(
     private val xmlInputDocumentRepository: XmlInputDocumentRepository,
-    private val canonicalService: CanonicalService,
-    private val sentToAbsService: SentToAbsService,
     private val hashService: HashService,
 ) {
 
@@ -23,20 +20,17 @@ class XmlInputSaverService(
         if (!Init.isInitialized()) Init.init()
     }
 
-    fun saveToDb(xmlString: String) {
-        canonicalService.canonicalizeXml(xmlString)
-            .let {
-                XmlInputDocument(
-                    id = null,
-                    xmlInputHash = hashService.hash(it),
-                    xmlData = it,
-                )
-            }.let {
-                xmlInputDocumentRepository.save(it)
-            }.also {
-                log.debug("Xml document with id: {} saved to DB", it.id)
-                sentToAbsService.send(it)
-            }
+    fun saveToDb(
+        xmlString: String,
+        certificateName: String,
+    ): XmlInputDocument {
+        val hash = hashService.hash(xmlString)
+        xmlInputDocumentRepository.mergeDocument(
+            hash = hash,
+            xmlData = xmlString,
+            certificateName = certificateName,
+        )
+        return xmlInputDocumentRepository.findByXmlInputHash(hash)
     }
 
 }

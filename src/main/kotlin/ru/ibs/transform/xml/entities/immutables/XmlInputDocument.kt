@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import java.time.Instant
+import kotlin.math.min
 
 @Entity
 data class XmlInputDocument(
@@ -14,10 +15,13 @@ data class XmlInputDocument(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
+    @Column(unique = true, nullable = false)
     val xmlInputHash: ByteArray,
 
     @Column(columnDefinition = "TEXT")
     val xmlData: String,
+
+    val certificateName: String,
 
     val createdAt: Instant = Instant.now(),
 
@@ -36,7 +40,7 @@ data class XmlInputDocument(
     }
 
     override fun toString(): String {
-        return "XmlInputDocument(id=$id, xmlData='$xmlData')"
+        return "XmlInputDocument(id=$id, xmlData='${xmlData.substring(0, min(50, xmlData.length))}...')"
     }
 
 }
