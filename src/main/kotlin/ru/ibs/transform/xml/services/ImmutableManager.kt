@@ -15,25 +15,25 @@ class ImmutableManager(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun workflow(xmlString: String, signatureBytes: ByteArray, certificateName: String): ImmutableProcessStatuses {
+    fun workflow(xmlString: String, signatureBytes: ByteArray, certificateName: String): ImmuableManagerResult {
         val verified = keyVerifierService.verifyText(xmlString, signatureBytes, certificateName)
         if (!verified) {
-            return ImmutableProcessStatuses.NOT_VERIFIED
+            return ImmuableManagerResult(ImmutableProcessStatuses.NOT_VERIFIED, null)
         }
         val savedXmlDoc = xmlInputSaverService.saveToDb(xmlString, certificateName)
 
         val sentToAbs = sentToAbsService.findByInputDoc(savedXmlDoc)
         if (sentToAbs == null) {
             sentToAbsService.send(savedXmlDoc)
-            return ImmutableProcessStatuses.ACCEPTED // только что создали, приняли в работу
+            return ImmuableManagerResult(ImmutableProcessStatuses.ACCEPTED, null) // только что создали, приняли в работу
         }
 
         val receivedFromAbs = receivedFromAbsService.findBySentToAbs(sentToAbs)
         if (receivedFromAbs != null) {
-            return ImmutableProcessStatuses.COMPLETED
+            return ImmuableManagerResult(ImmutableProcessStatuses.COMPLETED, receivedFromAbs.xmlAbsAnswer)
         }
 
-        return ImmutableProcessStatuses.ACCEPTED // похоже отправили, но еще не получен ответ
+        return ImmuableManagerResult(ImmutableProcessStatuses.ACCEPTED, null) // похоже отправили, но еще не получен ответ
     }
 
     fun answerReceived(xmlInputDocMultiPart: MultipartFile, answerMultiPart: MultipartFile) {

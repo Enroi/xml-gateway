@@ -25,7 +25,7 @@ interface ReceivedFromAbsRepository: JpaRepository<ReceivedFromAbs, Long> {
         )) AS source (json_sent_abs_hash, json_sent_abs_json, xml_abs_answer_hash, xml_abs_answer, created_at)
         ON target.json_sent_abs_hash = source.json_sent_abs_hash
         WHEN NOT MATCHED THEN INSERT 
-            (json_sent_abs_hash, json_sent_abs_json, xml_abs_answer_hash, created_at)
+            (json_sent_abs_hash, json_sent_abs_json, xml_abs_answer_hash, xml_abs_answer, created_at)
         VALUES (
             source.json_sent_abs_hash, 
             source.json_sent_abs_json, 

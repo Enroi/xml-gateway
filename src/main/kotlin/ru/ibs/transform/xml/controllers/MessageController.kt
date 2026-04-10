@@ -1,6 +1,7 @@
 package ru.ibs.transform.xml.controllers
 
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -24,7 +25,7 @@ class MessageController(
         @RequestBody messageXml: String,
         @RequestHeader("Certificate-name") certificateName: String,
         @RequestHeader("Message-hash") signatureBase64: String,
-    ): ImmutableProcessStatuses {
+    ): ResponseEntity<String> {
         val strForLog = messageXml.substring(0, min(50, messageXml.length - 1))
         val signatureBytes = Base64.decode(signatureBase64)
         val logMessageEnding = "certificate: $certificateName text:$strForLog"
@@ -34,7 +35,13 @@ class MessageController(
             signatureBytes = signatureBytes,
             certificateName = certificateName
         )
+        val httpResult = when (result.status) {
+            ImmutableProcessStatuses.COMPLETED -> ResponseEntity.ok(result.xmlResult)
+            ImmutableProcessStatuses.ACCEPTED -> ResponseEntity.status(202).build()
+            ImmutableProcessStatuses.NOT_VERIFIED -> ResponseEntity.status(401).build()
+        }
+
         log.info("Message processed: {}", logMessageEnding)
-        return result
+        return httpResult
     }
 }

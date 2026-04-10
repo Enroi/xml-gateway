@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToOne
+import java.time.Instant
 import kotlin.math.min
 
 @Entity
@@ -24,6 +25,8 @@ data class ReceivedFromAbs(
     val xmlAbsAnswer: String,
 
     val xmlAbsAnswerHash: ByteArray,
+
+    val createdAt: Instant,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
