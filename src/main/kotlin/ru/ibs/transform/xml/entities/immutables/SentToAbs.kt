@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToOne
+import java.time.Instant
 
 @Entity
 data class SentToAbs(
@@ -14,13 +15,15 @@ data class SentToAbs(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
+    @Column(unique = true, nullable = false)
     val jsonSentAbsHash: ByteArray,
 
     @Column(columnDefinition = "TEXT")
     val jsonSentAbsJson: String,
 
-    @OneToOne
-    val xmlInputDocument: XmlInputDocument,
+    val xmlInputDocumentHash: ByteArray,
+
+    val createdAt: Instant = Instant.now(),
 
     ) {
     override fun equals(other: Any?): Boolean {

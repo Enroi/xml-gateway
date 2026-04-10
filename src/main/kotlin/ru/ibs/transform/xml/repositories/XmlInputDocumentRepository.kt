@@ -24,9 +24,6 @@ interface XmlInputDocumentRepository: JpaRepository<XmlInputDocument, Long> {
             :createdAt
         )) AS source (xml_input_hash, xml_data, certificate_name, created_at)
         ON target.xml_input_hash = source.xml_input_hash
-        WHEN MATCHED THEN UPDATE SET 
-            xml_data = source.xml_data,
-            certificate_name = source.certificate_name
         WHEN NOT MATCHED THEN INSERT 
             (xml_input_hash, xml_data, certificate_name, created_at)
         VALUES (

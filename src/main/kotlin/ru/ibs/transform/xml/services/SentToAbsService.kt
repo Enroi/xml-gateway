@@ -6,6 +6,7 @@ import ru.ibs.transform.xml.entities.immutables.XmlInputDocument
 import ru.ibs.transform.xml.repositories.SentToAbsRepository
 import kotlin.jvm.javaClass
 import ru.ibs.transform.xml.entities.immutables.SentToAbs
+import java.time.Instant
 
 
 @Service
@@ -13,24 +14,32 @@ class SentToAbsService(
     private val sentToAbsRepository: SentToAbsRepository,
     private val canonicalService: CanonicalService,
     private val hashService: HashService,
+    private val absEmulatorService: AbsEmulatorService,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun send(xmlInputDocument: XmlInputDocument) {
-        val sentMap = mutableMapOf<String, String>()
-        sentMap["xml"] = xmlInputDocument.xmlData
-        sentMap["abs"] = "ABS 1"
-
-        val jsonString = canonicalService.canonicalizeJson(sentMap)
-        val sentToAbs = SentToAbs(
-            id = null,
-            jsonSentAbsHash = hashService.hash(jsonString),
+        val jsonString = convertToJsonString(xmlInputDocument)
+        sentToAbsRepository.merge(
             jsonSentAbsJson = jsonString,
-            xmlInputDocument = xmlInputDocument,
+            xmlInputDocumentHash = hashService.hash(xmlInputDocument.xmlData),
+            jsonSentAbsHash = hashService.hash(jsonString),
+            createdAt = Instant.now(),
         )
-        sentToAbsRepository.save(sentToAbs)
-
         log.info("Sending to ABS: {}", xmlInputDocument)
+        val saved = findByInputDoc(xmlInputDocument)
+        absEmulatorService.emulateForSentToAbs(saved!!)
+    }
 
+    private fun convertToJsonString(xmlInputDocument: XmlInputDocument): String =
+        canonicalService.canonicalizeJson(
+            mapOf(
+                "xml" to xmlInputDocument.xmlData,
+                "abs" to "ABS 1"
+            )
+        )
+
+    fun findByInputDoc(xmlInputDocument: XmlInputDocument): SentToAbs? {
+        return sentToAbsRepository.findByXmlInputDocumentHash(hashService.hash(xmlInputDocument.xmlData))
     }
 }

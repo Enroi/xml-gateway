@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.ibs.transform.xml.services.ImmutableManager
 import ru.ibs.transform.xml.services.ImmutableProcessStatuses
-import ru.ibs.transform.xml.services.XmlInputSaverService
 import kotlin.io.encoding.Base64
 import kotlin.math.min
 
@@ -30,7 +29,7 @@ class MessageController(
         val signatureBytes = Base64.decode(signatureBase64)
         val logMessageEnding = "certificate: $certificateName text:$strForLog"
         log.info("Message received {}", logMessageEnding)
-        val result = immutableManager.start(
+        val result = immutableManager.workflow(
             xmlString = messageXml,
             signatureBytes = signatureBytes,
             certificateName = certificateName
