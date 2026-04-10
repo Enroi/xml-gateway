@@ -4,6 +4,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import ru.ibs.transform.xml.entities.immutables.SentToAbs
 import ru.ibs.transform.xml.repositories.ReceivedFromAbsRepository
+import ru.ibs.transform.xml.services.immutables.HashService
 import java.time.Instant
 
 @Service

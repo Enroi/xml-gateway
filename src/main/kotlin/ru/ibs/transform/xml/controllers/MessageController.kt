@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.ibs.transform.xml.services.ImmutableManager
-import ru.ibs.transform.xml.services.ImmutableProcessStatuses
+import ru.ibs.transform.xml.services.immutables.ImmutableManager
+import ru.ibs.transform.xml.services.immutables.ImmutableProcessStatuses
 import kotlin.io.encoding.Base64
 import kotlin.math.min
 
