@@ -5,7 +5,7 @@ import org.apache.xml.security.Init
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.ibs.transform.xml.entities.immutables.XmlInputDocument
-import ru.ibs.transform.xml.repositories.XmlInputDocumentRepository
+import ru.ibs.transform.xml.repositories.immutables.XmlInputDocumentRepository
 
 @Service
 class XmlInputSaverService(

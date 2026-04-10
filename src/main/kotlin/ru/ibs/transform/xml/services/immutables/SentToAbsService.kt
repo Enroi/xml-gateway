@@ -3,7 +3,7 @@ package ru.ibs.transform.xml.services.immutables
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.ibs.transform.xml.entities.immutables.XmlInputDocument
-import ru.ibs.transform.xml.repositories.SentToAbsRepository
+import ru.ibs.transform.xml.repositories.immutables.SentToAbsRepository
 import kotlin.jvm.javaClass
 import ru.ibs.transform.xml.entities.immutables.SentToAbs
 import ru.ibs.transform.xml.services.AbsEmulatorService
