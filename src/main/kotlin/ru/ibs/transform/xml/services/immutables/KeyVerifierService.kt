@@ -1,18 +1,34 @@
 package ru.ibs.transform.xml.services.immutables
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.ibs.transform.xml.repositories.immutables.CertficateDisabledRepository
+import ru.ibs.transform.xml.repositories.immutables.CertificateEnabledRepository
 import java.security.KeyFactory
 import java.security.Signature
 import java.security.spec.X509EncodedKeySpec
 import kotlin.io.encoding.Base64
 
 @Service
-class KeyVerifierService {
+class KeyVerifierService(
+    private val certificateEnabledRepository: CertificateEnabledRepository,
+    private val certificateDisabledRepository: CertficateDisabledRepository,
+    private val hashService: HashService,
+    ) {
 
-    fun verifyText(text: String, signatureBytes: ByteArray, certificateName: String): Boolean {
-        val certificate: String = publicKeys[certificateName] ?: run { throw SecurityException("Unknown Certificate: $certificateName") }
+    @Value("\${xml-gateway.public-keys-folder-path}")
+    private lateinit var keyFolderPath: String
 
-        val keyBytes = Base64.decode(certificate)
+    fun verifyText(text: String, signatureBytes: ByteArray, certificateParam: String): Boolean {
+
+        val certificateHash = hashService.hash(certificateParam)
+        val certificate = certificateEnabledRepository.findByCertificateHash(certificateHash) ?: run { throw SecurityException("Unknown Certificate: $certificateParam") }
+        val certificateDisabled = certificateDisabledRepository.existsByCertificateHash(certificateHash)
+        if (certificateDisabled) {
+            throw SecurityException("Certificate disabled: $certificateParam")
+        }
+
+        val keyBytes = Base64.decode(certificate.getClearCertificate())
         val keySpec = X509EncodedKeySpec(keyBytes)
         val keyFactory = KeyFactory.getInstance("RSA")
         val publicKey = keyFactory.generatePublic(keySpec)
@@ -22,21 +38,4 @@ class KeyVerifierService {
         return signature.verify(signatureBytes)
     }
 
-    companion object {
-        val certificate1 = """
-            -----BEGIN PUBLIC KEY-----
-            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm7+e9QLoR6TLcqHva1xD
-            9TwpSqWdJ2ff0VSZc3xL2UJ2gbIW4bG8DPD5N7ylQKdsDRxuGZtv01OZpevWt7u9
-            alqTtPpYCbp7u9Ukklwma1/SDtI9t2FHVFSCYoRw7pPe170nVaKv9UWAblbnnhcT
-            bNGLsELXchw37bz6M5zt9OAznN+BPnJvYX3/smdofhJoDybwYXkgicBazZHhHiwJ
-            TQGQxxQMUexGNXui8TQ5MU0dZYBUYinv12Beb7Atim3Jg5Rn9WfvKPSLqWnrVUxl
-            8bh1Y9/8CGA5GXzF1UXjHH7jxBSfk3ZEV/3lObAcG9KSNWq3tSmywI1ppb+YCOt1
-            HwIDAQAB
-            -----END PUBLIC KEY-----
-        """.trimIndent()
-            .replace("-----BEGIN PUBLIC KEY-----", "")
-            .replace("-----END PUBLIC KEY-----", "")
-            .replace("\\s".toRegex(), "")
-        val publicKeys = mapOf("certificate 1" to certificate1)
-    }
 }

@@ -16,6 +16,7 @@ data class ReceivedFromAbs(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
+    @Column(unique = true, nullable = false)
     val jsonSentAbsHash: ByteArray,
 
     @Column(columnDefinition = "TEXT")

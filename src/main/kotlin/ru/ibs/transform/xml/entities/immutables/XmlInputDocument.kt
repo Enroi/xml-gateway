@@ -21,8 +21,6 @@ data class XmlInputDocument(
     @Column(columnDefinition = "TEXT")
     val xmlData: String,
 
-    val certificateName: String,
-
     val createdAt: Instant = Instant.now(),
 
     ) {

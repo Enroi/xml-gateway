@@ -23,17 +23,18 @@ class MessageController(
     @PostMapping
     fun process(
         @RequestBody messageXml: String,
-        @RequestHeader("Certificate-name") certificateName: String,
+        @RequestHeader("Certificate") certificateBase64: String,
         @RequestHeader("Message-hash") signatureBase64: String,
     ): ResponseEntity<String> {
         val strForLog = messageXml.substring(0, min(50, messageXml.length - 1))
         val signatureBytes = Base64.decode(signatureBase64)
-        val logMessageEnding = "certificate: $certificateName text:$strForLog"
+        val certificate = Base64.decode(certificateBase64).decodeToString()
+        val logMessageEnding = "certificate: $certificate text:$strForLog"
         log.info("Message received {}", logMessageEnding)
         val result = immutableManager.workflow(
             xmlString = messageXml,
             signatureBytes = signatureBytes,
-            certificateName = certificateName
+            certificate = certificate
         )
         val httpResult = when (result.status) {
             ImmutableProcessStatuses.COMPLETED -> ResponseEntity.ok(result.xmlResult)

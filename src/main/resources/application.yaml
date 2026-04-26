@@ -22,6 +22,8 @@ springdoc:
     enabled: ${SPRING_SWAGGER:true}
   swagger-ui:
     enabled: ${SPRING_SWAGGER:true}
+    tags-sorter: alpha      # Сортировка контроллеров (тегов) по алфавиту
+    operations-sorter: alpha # Сортировка методов внутри контроллера по алфавиту
 
 logging:
   level:
@@ -31,3 +33,6 @@ logging:
           jdbc:
             bind: TRACE
         SQL: DEBUG
+
+xml-gateway:
+  public-keys-folder-path: ${KEYS_FOLDER_PATH}

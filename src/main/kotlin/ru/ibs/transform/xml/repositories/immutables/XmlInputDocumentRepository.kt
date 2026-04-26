@@ -19,16 +19,14 @@ interface XmlInputDocumentRepository: JpaRepository<XmlInputDocument, Long> {
         USING (VALUES (
             cast(:hashHex as BINARY VARYING(255)),
             :xmlData,
-            :certificateName,
             :createdAt
-        )) AS source (xml_input_hash, xml_data, certificate_name, created_at)
+        )) AS source (xml_input_hash, xml_data, created_at)
         ON target.xml_input_hash = source.xml_input_hash
         WHEN NOT MATCHED THEN INSERT 
-            (xml_input_hash, xml_data, certificate_name, created_at)
+            (xml_input_hash, xml_data, created_at)
         VALUES (
             source.xml_input_hash, 
             source.xml_data, 
-            source.certificate_name, 
             source.created_at
         )
     """,
@@ -37,7 +35,6 @@ interface XmlInputDocumentRepository: JpaRepository<XmlInputDocument, Long> {
     fun mergeDocument(
         @Param("hashHex") hash: ByteArray,
         @Param("xmlData") xmlData: String,
-        @Param("certificateName") certificateName: String,
         @Param("createdAt") createdAt: Instant = Instant.now(),
     )
 

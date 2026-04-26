@@ -22,13 +22,11 @@ class XmlInputSaverService(
 
     fun saveToDb(
         xmlString: String,
-        certificateName: String,
     ): XmlInputDocument {
         val hash = hashService.hash(xmlString)
         xmlInputDocumentRepository.mergeDocument(
             hash = hash,
             xmlData = xmlString,
-            certificateName = certificateName,
         )
         return xmlInputDocumentRepository.findByXmlInputHash(hash)
     }

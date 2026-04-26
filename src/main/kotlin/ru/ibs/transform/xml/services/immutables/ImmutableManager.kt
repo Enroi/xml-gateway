@@ -15,12 +15,12 @@ class ImmutableManager(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun workflow(xmlString: String, signatureBytes: ByteArray, certificateName: String): ImmuableManagerResult {
-        val verified = keyVerifierService.verifyText(xmlString, signatureBytes, certificateName)
+    fun workflow(xmlString: String, signatureBytes: ByteArray, certificate: String): ImmuableManagerResult {
+        val verified = keyVerifierService.verifyText(xmlString, signatureBytes, certificate)
         if (!verified) {
             return ImmuableManagerResult(ImmutableProcessStatuses.NOT_VERIFIED, null)
         }
-        val savedXmlDoc = xmlInputSaverService.saveToDb(xmlString, certificateName)
+        val savedXmlDoc = xmlInputSaverService.saveToDb(xmlString)
 
         val sentToAbs = sentToAbsService.findByInputDoc(savedXmlDoc)
         if (sentToAbs == null) {
