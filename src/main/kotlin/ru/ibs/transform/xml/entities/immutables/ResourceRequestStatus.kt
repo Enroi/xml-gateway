@@ -9,5 +9,10 @@ enum class ResourceRequestStatus {
     RESOURCES_NOT_FOUND,
     RESOURCES_FOUND,
     RESOURCES_READY_FOR_ISSUANCE,
-    RESOURCES_ISSUED;
+    RESOURCES_ISSUED,
+    FINISHED;
+
+    fun allInTextExceptFinished() = entries.filter { it != FINISHED }
+        .map(ResourceRequestStatus::name)
+
 }

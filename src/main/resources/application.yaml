@@ -33,6 +33,3 @@ logging:
 #          jdbc:
 #            bind: TRACE
         SQL: DEBUG
-
-xml-gateway:
-  public-keys-folder-path: ${KEYS_FOLDER_PATH}

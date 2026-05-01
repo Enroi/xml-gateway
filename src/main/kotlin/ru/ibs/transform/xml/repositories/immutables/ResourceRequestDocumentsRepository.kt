@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import ru.ibs.transform.xml.entities.immutables.ResourceRequestDocument
+import ru.ibs.transform.xml.entities.immutables.ResourceRequestStatus
+import ru.ibs.transform.xml.entities.immutables.ResourceRequestStatus.FINISHED
 import java.time.Instant
 
 interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocument, Long> {
@@ -23,11 +25,11 @@ interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocu
             cast(:parentDocumentHash as BINARY VARYING(255)),
             :parentDocumentJson,
             :resourceName,
-            :requestTimeGeneration
-        )) AS source (json_hash, JSON_DATA , created_at, DOCUMENT_TYPE, PARENT_DOCUMENT_HASH, PARENT_DOCUMENT_JSON, RESOURCE_NAME, REQUEST_TIME_GENERATION)
+            :requestId
+        )) AS source (json_hash, JSON_DATA , created_at, DOCUMENT_TYPE, PARENT_DOCUMENT_HASH, PARENT_DOCUMENT_JSON, RESOURCE_NAME, REQUEST_ID)
         ON target.json_hash = source.json_hash
         WHEN NOT MATCHED THEN INSERT 
-            (json_hash, JSON_DATA , created_at, DOCUMENT_TYPE, PARENT_DOCUMENT_HASH, PARENT_DOCUMENT_JSON, RESOURCE_NAME, REQUEST_TIME_GENERATION)
+            (json_hash, JSON_DATA , created_at, DOCUMENT_TYPE, PARENT_DOCUMENT_HASH, PARENT_DOCUMENT_JSON, RESOURCE_NAME, REQUEST_ID)
         VALUES(
             source.json_hash, 
             source.JSON_DATA , 
@@ -36,7 +38,7 @@ interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocu
             source.PARENT_DOCUMENT_HASH,
             source.PARENT_DOCUMENT_JSON,
             source.RESOURCE_NAME,
-            source.REQUEST_TIME_GENERATION
+            source.REQUEST_ID
         )
     """,
         nativeQuery = true
@@ -48,7 +50,7 @@ interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocu
         @Param("parentDocumentHash") parentDocumentHash: ByteArray?,
         @Param("parentDocumentJson") parentDocumentJSON: String?,
         @Param("resourceName") resourceName: String,
-        @Param("requestTimeGeneration") requestTimeGeneration: Instant,
+        @Param("requestId") requestId: String,
         @Param("createdAt") createdAt: Instant = Instant.now(),
     )
 
@@ -58,9 +60,15 @@ interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocu
         where not exists (
             select 1 from resource_request_document c where c.parent_document_hash = p.json_hash
         )
-        and document_type not in ('REJECTION_AFTER_FIRST')
+        and document_type in (:filterValues)
+        for update
         """,
         nativeQuery = true
+//        and document_type != 'FINISHED'
     )
-    fun findForWork(): List<ResourceRequestDocument>
+    fun findForWork(
+        @Param("filterValues") filterValues: List<String> = ResourceRequestStatus.entries
+            .filter { it != FINISHED }
+            .map(ResourceRequestStatus::name) // этот "финт" нужен для задействуя индекса по полю document_type
+    ): List<ResourceRequestDocument>
 }

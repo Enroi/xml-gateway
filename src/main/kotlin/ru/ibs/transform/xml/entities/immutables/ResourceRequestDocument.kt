@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.Index
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import ru.ibs.transform.xml.controllers.ResourceRequestDTO
@@ -15,7 +16,8 @@ import kotlin.math.min
 
 @Entity
 @Table(
-    uniqueConstraints = [UniqueConstraint(columnNames = ["jsonHash", "document_type"])]
+    uniqueConstraints = [UniqueConstraint(columnNames = ["jsonHash"])],
+    indexes = [Index(columnList = "parentDocumentHash"), Index(columnList = "documentType")],
 )
 data class ResourceRequestDocument(
 
@@ -41,7 +43,7 @@ data class ResourceRequestDocument(
 
     val resourceName: String,
 
-    val requestTimeGeneration: Instant,
+    val requestId: String,
 
     ) {
     override fun equals(other: Any?): Boolean {
@@ -62,7 +64,7 @@ data class ResourceRequestDocument(
     }
 
     fun toDto() = ResourceRequestDTO(
-        timeGeneration = requestTimeGeneration,
+        requestId = requestId,
         status = documentType,
         resourceName = resourceName,
     )

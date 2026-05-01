@@ -16,9 +16,6 @@ class KeyVerifierService(
     private val hashService: HashService,
     ) {
 
-    @Value("\${xml-gateway.public-keys-folder-path}")
-    private lateinit var keyFolderPath: String
-
     fun verifyText(text: String, signatureBytes: ByteArray, certificateParam: String): Boolean {
 
         val certificateHash = hashService.hash(certificateParam)

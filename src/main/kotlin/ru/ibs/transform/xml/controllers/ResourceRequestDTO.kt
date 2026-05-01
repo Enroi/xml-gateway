@@ -7,8 +7,8 @@ import java.time.Instant
 
 data class ResourceRequestDTO(
 
-    @JsonProperty("request-time-generation")
-    val timeGeneration: Instant,
+    @JsonProperty("request-id")
+    val requestId: String,
 
     val status: ResourceRequestStatus,
 
