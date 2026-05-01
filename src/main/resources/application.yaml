@@ -15,7 +15,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update  # Автоматическое создание/обновление таблиц
-    show-sql: true      # Показывать SQL запросы
+#    show-sql: true      # Показывать SQL запросы
 
 springdoc:
   api-docs:
@@ -29,9 +29,9 @@ logging:
   level:
     org:
       hibernate:
-        orm:
-          jdbc:
-            bind: TRACE
+#        orm:
+#          jdbc:
+#            bind: TRACE
         SQL: DEBUG
 
 xml-gateway:
