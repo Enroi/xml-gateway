@@ -61,7 +61,7 @@ interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocu
             select 1 from resource_request_document c where c.parent_document_hash = p.json_hash
         )
         and document_type in (:filterValues)
-        for update
+        for update skip locked
         """,
         nativeQuery = true
 //        and document_type != 'FINISHED'
