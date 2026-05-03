@@ -12,7 +12,4 @@ enum class ResourceRequestStatus {
     RESOURCES_ISSUED,
     FINISHED;
 
-    fun allInTextExceptFinished() = entries.filter { it != FINISHED }
-        .map(ResourceRequestStatus::name)
-
 }

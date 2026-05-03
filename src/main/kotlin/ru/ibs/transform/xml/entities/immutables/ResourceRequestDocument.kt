@@ -17,7 +17,7 @@ import kotlin.math.min
 @Entity
 @Table(
     uniqueConstraints = [UniqueConstraint(columnNames = ["jsonHash"])],
-    indexes = [Index(columnList = "parentDocumentHash"), Index(columnList = "documentType")],
+    indexes = [Index(columnList = "parentDocumentHash"), Index(columnList = "requestId, documentType")],
 )
 data class ResourceRequestDocument(
 

@@ -60,15 +60,12 @@ interface ResourceRequestDocumentsRepository : JpaRepository<ResourceRequestDocu
         where not exists (
             select 1 from resource_request_document c where c.parent_document_hash = p.json_hash
         )
-        and document_type in (:filterValues)
-        for update skip locked
+        and document_type != 'FINISHED'
+        and request_id = :requestId
         """,
         nativeQuery = true
-//        and document_type != 'FINISHED'
     )
     fun findForWork(
-        @Param("filterValues") filterValues: List<String> = ResourceRequestStatus.entries
-            .filter { it != FINISHED }
-            .map(ResourceRequestStatus::name) // этот "финт" нужен для задействуя индекса по полю document_type
+        @Param("requestId") requestId: String
     ): List<ResourceRequestDocument>
 }

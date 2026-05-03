@@ -7,8 +7,6 @@ spring:
     console:
       enabled: true
   datasource:
-    hikari:
-      transaction-isolation: TRANSACTION_SERIALIZABLE
     url: ${DATABASE_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
@@ -32,4 +30,4 @@ logging:
 #        orm:
 #          jdbc:
 #            bind: TRACE
-        SQL: DEBUG
+#        SQL: DEBUG

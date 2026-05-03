@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.ibs.transform.xml.configs.ProcessEvent
+import ru.ibs.transform.xml.controllers.ResourceRequestDTO
 import ru.ibs.transform.xml.entities.immutables.ResourceRequestDocument
 import ru.ibs.transform.xml.entities.immutables.ResourceRequestStatus
 import ru.ibs.transform.xml.repositories.immutables.ResourceRequestDocumentsRepository
@@ -26,8 +27,8 @@ class ResourceRequestServiceAsync(
     @Async
     fun doWorkWithDocuments(event: ProcessEvent) {
         log.info("Получен документ для обработки {}", event.source)
-
-        resourceRequestDocumentsRepository.findForWork()
+        val dto: ResourceRequestDTO = event.getSource() as ResourceRequestDTO
+        resourceRequestDocumentsRepository.findForWork(requestId = dto.requestId)
             .forEach { document ->
                 when (document.documentType) {
                     ResourceRequestStatus.INITIAL -> assignNewStatus(
